@@ -2,6 +2,7 @@ import * as React from "react";
 import { open } from "react-native-file-viewer-turbo";
 import { Button } from "react-native";
 import { documentDirectory, downloadAsync } from "expo-file-system";
+import { openFileAsync } from "expo-file-viewer";
 export default function Screen() {
   async function load() {
     const url =
@@ -27,7 +28,9 @@ export default function Screen() {
 
     try {
       const result = await downloadAsync(url, localFile);
-      await open(result.uri, { displayName: "Downloaded PDF" });
+      // await open(result.uri, { displayName: "Downloaded PDF" });
+
+      await openFileAsync(result.uri);
     } catch (e) {
       // error
     }
