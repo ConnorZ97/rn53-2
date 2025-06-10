@@ -15,6 +15,9 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { NotifierWrapper } from "react-native-notifier";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -54,19 +57,25 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            title: "Starter Base",
-            headerRight: () => <ThemeToggle />,
-          }}
-        />
-      </Stack>
-      <PortalHost />
-    </ThemeProvider>
+    <GestureHandlerRootView className={"flex-1"}>
+      <SafeAreaProvider>
+        <NotifierWrapper>
+          <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+            <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+            <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  title: "Starter Base",
+                  headerRight: () => <ThemeToggle />,
+                }}
+              />
+            </Stack>
+            <PortalHost />
+          </ThemeProvider>
+        </NotifierWrapper>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

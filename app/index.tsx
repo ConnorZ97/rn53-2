@@ -8,6 +8,7 @@ import {
   getInfoAsync,
   cacheDirectory,
 } from "expo-file-system";
+import { Notifier, Easing } from "react-native-notifier";
 
 export default function Screen() {
   // async function load() {
@@ -39,9 +40,9 @@ export default function Screen() {
   // }
   // }
 
-  const url =
-    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-  const fileUri = cacheDirectory + "dummy.pdf";
+  // const url =
+  //   "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+  // const fileUri = cacheDirectory + "dummy.pdf";
   //
   // const [downloadProgress, setDownloadProgress] = useState(0);
   //
@@ -86,13 +87,27 @@ export default function Screen() {
   return (
     <>
       <Button
-        title={"Download"}
+        title={"Open notifier"}
         onPress={async () => {
-          const resultUri = await downloadFileAsync(url, fileUri, {
-            cache: true,
-            sessionType: FileSystemSessionType.BACKGROUND,
+          // const resultUri = await downloadFileAsync(url, fileUri, {
+          //   cache: true,
+          //   sessionType: FileSystemSessionType.BACKGROUND,
+          // });
+          // console.log("result uri", resultUri);
+          Notifier.showNotification({
+            title: "John Doe",
+            description: "Hello! Can you help me with notifications?",
+            duration: 1000,
+            showAnimationDuration: 800,
+            showEasing: Easing.bounce,
+            onHidden: () => console.log("Hidden"),
+            onPress: () => console.log("Press"),
+            hideOnPress: false,
+            queueMode: "standby",
+            // containerStyle: () => ({
+            //   paddingTop: 100,
+            // }),
           });
-          console.log("result uri", resultUri);
         }}
       />
     </>
