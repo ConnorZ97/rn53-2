@@ -70,6 +70,12 @@ export default function RootLayout() {
                   headerRight: () => <ThemeToggle />,
                 }}
               />
+              <Stack.Screen
+                name="swipeable"
+                options={{
+                  title: "Swipeable",
+                }}
+              />
             </Stack>
             <PortalHost />
           </ThemeProvider>
