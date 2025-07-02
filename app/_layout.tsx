@@ -76,7 +76,18 @@ export default function RootLayout() {
                   title: "Swipeable",
                 }}
               />
+              <Stack.Screen
+                name="flash-list"
+                options={{
+                  title: "Flash List",
+                }}
+              />
             </Stack>
+            <StatusBar
+              translucent={false}
+              style={"auto"}
+              backgroundColor={"white"}
+            />
             <PortalHost />
           </ThemeProvider>
         </NotifierWrapper>

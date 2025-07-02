@@ -1,15 +1,12 @@
 import * as React from "react";
-import { Button } from "react-native";
-
+import { Button, TextInput } from "react-native";
 import {
   createDownloadResumable,
   DownloadOptions,
-  FileSystemSessionType,
   getInfoAsync,
-  cacheDirectory,
 } from "expo-file-system";
-import { Notifier, Easing } from "react-native-notifier";
 import { Link } from "expo-router";
+import { useEffect, useState } from "react";
 
 export default function Screen() {
   // async function load() {
@@ -84,12 +81,28 @@ export default function Screen() {
   //     console.error(e);
   //   }
   // }
+  const [input, setInput] = useState("");
 
+  useEffect(() => {
+    console.log(input);
+  }, [input]);
   return (
     <>
       <Link href={"/swipeable"} asChild>
         <Button title={"Swipeable"} />
       </Link>
+      <Link href={"/flash-list"} asChild>
+        <Button title={"Flash List"} />
+      </Link>
+      <TextInput
+        className={"border"}
+        defaultValue={input}
+        onChangeText={(x) => setInput(x)}
+        multiline={true}
+        style={{ minHeight: 128 }}
+        textAlignVertical={"top"}
+        placeholder="Enquiry"
+      />
     </>
   );
 }

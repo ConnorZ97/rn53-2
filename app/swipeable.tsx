@@ -1,27 +1,35 @@
 ﻿import {
-  ActivityIndicator,
-  Animated,
   Button,
-  ListRenderItemInfo,
+  LayoutAnimation,
   TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
 
-import React, { useCallback, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Text, StyleSheet } from "react-native";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import Reanimated, {
+import Animated, {
+  FadeIn,
+  FadeOut,
+  JumpingTransition,
   LinearTransition,
   SharedValue,
+  SlideInLeft,
+  SlideOutRight,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { FontAwesome5 } from "@expo/vector-icons";
-import ScrollView = Animated.ScrollView;
-import { list } from "postcss";
-import { FlashList, ListRenderItem } from "@shopify/flash-list";
+import {
+  AnimatedFlashList,
+  CellContainer,
+  FlashList,
+  ListRenderItem,
+} from "@shopify/flash-list";
+
+const AnimatedCellContainer = Animated.createAnimatedComponent(CellContainer);
 
 function RightAction(
   prog: SharedValue<number>,
@@ -39,7 +47,7 @@ function RightAction(
 
   return (
     <>
-      <Reanimated.View
+      <Animated.View
         style={{
           ...styleAnimation,
         }}
@@ -53,7 +61,7 @@ function RightAction(
         >
           <FontAwesome5 name={"trash"} color={"white"} size={20}></FontAwesome5>
         </TouchableOpacity>
-      </Reanimated.View>
+      </Animated.View>
     </>
   );
 }
@@ -69,7 +77,7 @@ function renderItem({
   item,
   onRightPress,
 }: {
-  item: ListRenderItem<BasicType>;
+  item: BasicType;
   onRightPress: () => void;
 }) {
   return (
@@ -105,19 +113,7 @@ function renderItem({
 
 export default function SwipeableScreen() {
   const [listData, setListData] = useState(data);
-
-  const renderItemComponent = useCallback(
-    // @ts-ignore
-    ({ item }) =>
-      renderItem({
-        item: item,
-        onRightPress: () => {
-          console.log("on right press", item.name);
-          setListData((v) => v.filter((x) => x.name != item.name));
-        },
-      }),
-    [],
-  );
+  const list = useRef<FlashList<BasicType> | null>(null);
 
   return (
     <GestureHandlerRootView>
@@ -137,14 +133,34 @@ export default function SwipeableScreen() {
             ]);
           }}
         />
-        <FlashList
+        <AnimatedFlashList
+          key={"flashlist"}
+          ref={list}
           contentContainerClassName={"px-[16px] py-[24px]"}
           data={listData}
-          renderItem={renderItemComponent}
+          renderItem={({ item }) =>
+            renderItem({
+              item: item,
+              onRightPress: () => {
+                console.log("on right press", item.name);
+                list.current?.prepareForLayoutAnimationRender();
+                setListData((v) => v.filter((x) => x.name != item.name));
+              },
+            })
+          }
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           onEndReached={() => {
             console.log("onEndReached");
           }}
+          // CellRendererComponent={(props) => (
+          //   <AnimatedCellContainer
+          //     {...props}
+          //     layout={LinearTransition}
+          //     entering={FadeIn}
+          //     exiting={FadeOut}
+          //   />
+          // )}
+          keyExtractor={(item, index) => item.value.toString()}
           onEndReachedThreshold={0.3}
           estimatedItemSize={64}
         />
